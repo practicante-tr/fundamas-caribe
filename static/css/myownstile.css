@@ -1,0 +1,22 @@
+.navigation a {
+  font-size: 1.2em;
+  display: inline-block;
+  margin-top: 20px;
+  padding: 8px 12px;
+  color: #666666;
+  font-weight: bold; }
+
+.navigation a:hover{
+  background: #29abe2;
+  color: #fff;
+  border-radius: 5px; }
+
+.navigation a:active{
+  background: #29abe2;
+  color: #fff;
+  border-radius: 5px; }
+
+#navigation a .active-link{
+  background: #29abe2;
+  color: #fff;
+  border-radius: 5px; }

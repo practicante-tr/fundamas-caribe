@@ -1,0 +1,181 @@
+<!-- <h1>Hola</h1> -->
+{% extends 'base.html'%} {% block content%} {% load static%}
+
+<main>
+    <!--? slider Area Start-->
+    <div class="slider-area slider-area2 slider-height2 position-relative" data-background="{% static 'img/hero/hero2.png'%}">
+        <div class="slider-active">
+            <!-- Single Slider -->
+            <div class="single-slider">
+                <div class="slider-cap-wrapper">
+                    <div class="hero-caption">
+                        <h1 data-animation="fadeInLeft" data-delay=".4s">¡Entérate de lo que hacemos!</h1>
+                        <!-- breadcrumb Start-->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'home'%}">Inicio</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'blog'%}">Blog</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <!-- breadcrumb End -->
+                    <div class="hero-img">
+                        <img src="{% static 'img/hero/h1_hero2.png' %}" alt="" data-animation="fadeInRight" data-transition-duration="5s">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="blog_area single-post-area section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 posts-list">
+                    {% include 'includes/messages.html' %}
+                    <div class="single-post">
+                        <div class="feature-img">
+                            <img class="img-fluid" src="{{detail_blogs.photo.url }}" width="100%" height="350" alt="">
+                        </div>
+                        <div class="blog_details">
+                            <h2 style="color: #2d2d2d;">{{ detail_blogs.title }}</h2>
+                            <ul class="blog-info-link mt-3 mb-4">
+                                <li><a href="#"><i class="fa fa-user"></i>{{detail_blogs.autor}}</a></li>
+                                <li><a href="#"><i class="fa fa-comments"></i>{{comments}} Comentarios</a></li>
+                                <li><a href="#"><i class="fa fa-calendar"></i>{{detail_blogs.created_at | date:"F d, Y" }}</a></li>
+
+                            </ul>
+                            <p class="excert">{{ detail_blogs.description | safe }}</p>
+                        </div>
+                    </div>
+                    <div class="navigation-top">
+                        <div class="d-sm-flex justify-content-between text-center">
+                            <p class="like-info"><span class="align-middle" style="color:#FD9E75;"><i class="fa fa-heart"></i></span> Fundamas Caribe - Propósito y Entereza</p>
+                            <div class="col-sm-4 text-center my-2 my-sm-0">
+                            </div>
+                            <ul class="social-icons">
+                                <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href="#"><i class="fab fa-twitter" ></i></a></li>
+                                <li><a href="#"><i class="fab fa-dribbble"></i></a></li>
+                                <li><a href="#"><i class="fab fa-behance"></i></a></li>
+
+                            </ul>
+                        </div>
+                        <div class="navigation-area" style="margin-top:-13px; padding-bottom: 2px;">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
+                                    <div class="thumb">
+                                        <a href="#">
+                                            <img class="img-fluid" src="" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comments-area">
+                        <h4>Comentarios</h4>
+                        {% for comment in list_comments %}
+                        <div class="comment-list">
+                            <div class="single-comment justify-content-between d-flex">
+                                <div class="user justify-content-between d-flex">
+                                    <div class="desc">
+                                        <p class="comment">
+                                            {{comment.body}}
+                                        </p>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <h5>
+                                                    <a href="#"> {{comment.name}}</a>
+                                                </h5>
+                                                <p class="date">{{comment.created_on | date:"F d, Y" }}</p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="comment-form">
+                        <h4>Deja tu comentario</h4>
+                        <form class="form-contact comment_form" action="{% url 'comment' %}" method="POST" id="commentForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="post_id" value="{{detail_blogs.id}}">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <textarea class="form-control w-100" name="body" id="comment" cols="30" rows="9" placeholder="Escribe tu comentario aquí" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <input class="form-control" name="name" id="name" type="text" placeholder="Nombre" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <input class="form-control" name="email" id="email" type="email" placeholder="Correo" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="button button-contactForm btn_1 boxed-btn">Comentar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="blog_right_sidebar">
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <h4 class="widget_title" style="color: #2d2d2d;">Categorias</h4>
+                            <ul class="list cat-list">
+                                {% for category in categories%}
+                                <li>
+                                    <a href="{% url 'posts_by_category' category.id %}" class="d-flex">
+                                        <p>{{ category.name }}</p>
+                                        <p>({{category.posts_count}})</p>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+                        <aside class="single_sidebar_widget popular_post_widget">
+                            <h3 class="widget_title" style="color: #2d2d2d;">Publicaciones Recientes</h3>
+                            {% for recent_post in recent_posts %}
+                            <div class="media post_item">
+                                <img src="{{recent_post.photo.url}}" width="70" height="60" alt="post">
+                                <div class="media-body">
+                                    <a href="{% url 'blogs_details' recent_post.id %}">
+                                        <h3 style="color: #2d2d2d;">{{ recent_post.title | truncatewords:5 }}</h3>
+                                    </a>
+                                    <p>{{recent_post.created_at | date:"F d, Y" }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </aside>
+                        <aside class="single_sidebar_widget newsletter_widget">
+                            <h4 class="widget_title" style="color: #2d2d2d;">Recibir Noticias</h4>
+                            <form action="{% url 'subscription' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="post_id" value="{{detail_blogs.id}}">
+                                <div class="form-group">
+                                    <input type="text" name="name" class="form-control" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Nombre completo'" placeholder='Nombre completo'>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" name="email" class="form-control" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Correo Electronico'" placeholder='Correo Electronico' required>
+                                </div>
+
+                                <button class="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn" type="submit">Suscribirse</button>
+                            </form>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Blog Area End -->
+</main>
+
+{% endblock %}
