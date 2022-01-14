@@ -1,0 +1,145 @@
+<!-- <h1>Blog</h1> -->
+{% extends 'base.html'%} {% block content%} {% load static%}
+
+<main>
+    <!--? slider Area Start-->
+    <div class="slider-area slider-area2 slider-height2 position-relative" data-background="{% static 'img/hero/hero2.png' %}">
+        <div class="slider-active">
+            <!-- Single Slider -->
+            <div class="single-slider">
+                <div class="slider-cap-wrapper">
+                    <div class="hero-caption">
+                        <h1 data-animation="fadeInLeft" data-delay=".4s">Nuestro Blog</h1>
+                        <!-- breadcrumb Start-->
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                                <li class="breadcrumb-item"><a href="#">Nuestro Blog</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <!-- breadcrumb End -->
+                    <div class="hero-img">
+                        <img src="{% static 'img/hero/h1_hero2.png' %}" alt="" data-animation="fadeInRight" data-transition-duration="5s">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- slider Area End-->
+    <!--? Blog Area Start-->
+    <section class="blog_area section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mb-5 mb-lg-0">
+                    <!-- <p>TESTING MESSAGES SIDE</p> -->
+                    {% include 'includes/messages.html'%}
+                    <div class="blog_left_sidebar">
+                        {% for blog in blogs %}
+                        <article class="blog_item">
+                            <div class="blog_item_img">
+                                <img class="card-img rounded-0" src="{{ blog.photo.url }}" width="650" height="450" alt="">
+                                <span class="blog_item_date">
+                                    <h3>{{ blog.created_at | date:"d" }}</h3>
+                                    <p>{{ blog.created_at | date:"M" }}</p>
+                                </span>
+                            </div>
+                            <div class="blog_details">
+                                <a class="d-inline-block" href="{% url 'blogs_details' blog.id %}">
+                                    <h2 class="blog-head" style="color: #2d2d2d;">{{ blog.title }}</h2>
+                                </a>
+                                <p>{{blog.description | safe | truncatewords:60 }}<a href="{% url 'blogs_details' blog.id %}" class="active">Leer más</a></p>
+                                <ul class="blog-info-link">
+                                    <li><a style="color: #999999;"><i class="fa fa-user"></i> {{blog.autor}}</a></li>
+                                    <li><a href="{% url 'blogs_details' blog.id %}"><i class="fa fa-comments"></i>Ver Comentarios</a></li>
+                                </ul>
+                            </div>
+                        </article>
+                        {% endfor %}
+                        <nav class="blog-pagination justify-content-center d-flex">
+                            {% if blogs.has_other_pages %}
+                            <ul class="pagination">
+                                {% if blogs.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{blogs.previous_page_number}}"><i class="ti-angle-left"></i></a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#"><i class="ti-angle-left"></i></a>
+                                </li>
+                                {% endif %}
+
+                                <!-- This for loop show me all the pages by number in the pagination side -->
+                                {% for i in blogs.paginator.page_range %}
+                                <!-- if blogs number is igual i it shoulb be active -->
+                                {% if blogs.number == i %}
+                                <li class="page-item active"> <a class="page-link" style="background-color:#FED1BD;" href="#">{{i}}</a> </li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                                {% endif %} {% endfor %} {% if blogs.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{blogs.next_page_number}}"><i class="ti-angle-right"></i></a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#"><i class="ti-angle-right"></i></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="blog_right_sidebar">
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <h4 class="widget_title" style="color: #2d2d2d;">Categorias</h4>
+                            <ul class="list cat-list">
+                                {% for category in categories%}
+                                <li>
+                                    <a href="{% url 'posts_by_category' category.id %}" class="d-flex">
+                                        <p>{{ category.name }}</p>
+                                        <p>({{category.posts_count}})</p>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+                        <aside class="single_sidebar_widget popular_post_widget">
+                            <h3 class="widget_title" style="color: #2d2d2d;">Publicaciones Recientes</h3>
+                            {% for recent_post in recent_posts %}
+                            <div class="media post_item">
+                                <img src="{{recent_post.photo.url}}" width="70" height="60" alt="post">
+                                <div class="media-body">
+                                    <a href="{% url 'blogs_details' recent_post.id %}">
+                                        <h3 style="color: #2d2d2d;">{{ recent_post.title | truncatewords:6 }}</h3>
+                                    </a>
+                                    <p>{{recent_post.created_at | date:"F d, Y" }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </aside>
+                        <aside class="single_sidebar_widget newsletter_widget">
+                            <h4 class="widget_title" style="color: #2d2d2d;">Recibir Noticias</h4>
+                            <form action="{% url 'blog' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input type="text" name="name" class="form-control" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Nombre completo'" placeholder='Nombre completo' required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" name="email" class="form-control" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Correo Electronico'" placeholder='Correo Electronico' required>
+                                </div>
+
+                                <button class="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn" type="submit">Suscribirse</button>
+                            </form>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Blog Area End -->
+</main>
+{% endblock%}
